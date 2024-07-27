@@ -4,7 +4,7 @@ from utils import is_scanned_pdf, pdf_to_images, extract_images_from_pdf
 
 
 folder_path = "data/Piemērs 1"
-processed_folder_path = "processed"
+processed_folder_path = "data/processed/Piemērs 1"
 
 for filename in os.listdir(folder_path):
     if filename.endswith(".pdf"):
@@ -23,5 +23,5 @@ for filename in os.listdir(folder_path):
             pdf_to_images(file_bytes, output_folder)
 
 
-# TODO: Spring 2016 doesn't work well
-# TODO: put into processed/Piemers1 processed/Piemers2 processed/Piemers3
+# TODO: Spring 2016 doesn't work well (2nd page shows images which are not there and is_scan should run on each page)
+# TODO: how to detect image extracted is a text or just some small logo?
