@@ -4,6 +4,7 @@ from vision import extract_text
 import re
 from dotenv import load_dotenv
 import base64
+import sys
 
 load_dotenv()
 
@@ -15,20 +16,27 @@ def sort_key_func(file):
 
 
 def process_images_in_folder(folder_path):
-    for root, dirs, _ in os.walk(folder_path):
-        for dir in dirs:
-            print(f"\n\n-------------------")
-            print(f"Processing file {dir}")
-            images_path = os.path.join(root, dir)
-            images = [img for img in os.listdir(images_path) if img.endswith(".png")]
-            sorted_images = sorted(images, key=sort_key_func)
+    original_stdout = sys.stdout
 
-            for image in sorted_images:
-                image_path = os.path.join(images_path, image)
-                with open(image_path, "rb") as image_file:
-                    encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-                print(f"\n    image {image}")
-                print(f"        {extract_text(client, encoded_string, is_base64=True)}")
+    with open("output.log", "w") as file:
+        sys.stdout = file 
+
+        for root, dirs, _ in os.walk(folder_path):
+            for dir in dirs:
+                print(f"\n\n-------------------")
+                print(f"Processing file {dir}")
+                images_path = os.path.join(root, dir)
+                images = [img for img in os.listdir(images_path) if img.endswith(".png")]
+                sorted_images = sorted(images, key=sort_key_func)
+
+                for image in sorted_images:
+                    image_path = os.path.join(images_path, image)
+                    with open(image_path, "rb") as image_file:
+                        encoded_string = base64.b64encode(image_file.read()).decode("utf-8")
+                    print(f"\n    image {image}")
+                    print(f"        {extract_text(client, encoded_string, is_base64=True)}")
+
+    sys.stdout = original_stdout
 
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
